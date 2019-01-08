@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.zx.mapper.StuCourseMapper">
+    <resultMap id="stuCourse" type="cn.zx.pojo.StuCourse">
+        <result column="grade" property="grade"/>
+        <association property="student" javaType="cn.zx.pojo.Student">
+            <id column="sno" property="sno"/>
+            <result column="sname" property="sname"/>
+            <result column="age" property="age"/>
+            <result column="dept" property="dept"/>
+        </association>
+        <association property="course" javaType="cn.zx.pojo.Course">
+            <id column="cno" property="cno"/>
+            <result column="cname" property="cname"/>
+            <result column="teacher" property="teacher"/>
+            <result column="credit" property="credit"/>
+        </association>
+    </resultMap>
+    <insert id="add">
+        INSERT INTO stu_cource VALUES (#{sno},#{cno},NULL)
+    </insert>
+    <delete id="remove">
+        DELETE FROM stu_cource WHERE sno=#{sno} AND cno=#{cno}
+    </delete>
+    <select id="snoFindNotCourse"  resultType="cn.zx.pojo.Course">
+        SELECT * FROM course WHERE cno NOT IN (SELECT cno FROM stu_cource WHERE sno=#{sno})
+    </select>
+    <select id="snoFindGrade" resultMap="stuCourse">
+        SELECT * FROM (stu_cource sc LEFT JOIN course c ON c.cno=sc.cno) LEFT JOIN student s ON s.sno=sc.sno
+            WHERE sc.sno=#{sno}
+    </select>
+    <select id="avg" resultType="java.util.HashMap">
+        SELECT course.cname,AVG(stu_cource.grade) 'avg'
+        FROM stu_cource LEFT JOIN course ON stu_cource.cno=course.cno
+        GROUP BY stu_cource.cno
+    </select>
+    <update id="reviseGrade">
+        UPDATE stu_cource SET grade=#{grade} WHERE sno=#{sno} AND cno=#{cno}
+    </update>
+    <select id="list" resultMap="stuCourse">
+        SELECT * FROM (stu_cource sc LEFT JOIN course c ON c.cno=sc.cno) LEFT JOIN student s ON s.sno=sc.sno WHERE sc.sno=#{sno}
+    </select>
+
+</mapper>

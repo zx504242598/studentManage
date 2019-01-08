@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.zx.mapper.StudentMapper">
+    <insert id="add" parameterType="cn.zx.pojo.Student">
+        INSERT INTO student VALUES (#{sno},#{sname},#{age},#{dept})
+    </insert>
+    <delete id="remove">
+        DELETE FROM student WHERE sno=#{sno}
+    </delete>
+    <update id="update" parameterType="cn.zx.pojo.Student">
+        UPDATE student SET sname=#{sname},age=#{age},dept=#{dept} WHERE sno=#{sno}
+    </update>
+    <select id="find" resultType="cn.zx.pojo.Student">
+        SELECT * FROM student WHERE sno=#{sno}
+    </select>
+</mapper>

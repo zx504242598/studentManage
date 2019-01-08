@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.zx.mapper.UserMapper">
+    <resultMap id="user" type="cn.zx.pojo.User">
+        <id column="username" property="username"/>
+        <result column="pwd" property="pwd"/>
+        <result column="role" property="role"/>
+        <association property="student" javaType="cn.zx.pojo.Student">
+            <id column="sno" property="sno" />
+            <result column="sname" property="sname"/>
+            <result column="age" property="age"/>
+            <result column="dept" property="dept"/>
+        </association>
+    </resultMap>
+    <insert id="add" parameterType="cn.zx.pojo.User">
+        INSERT INTO user VALUES(#{username},#{pwd},#{role},#{student.sno})
+    </insert>
+    <delete id="remove" parameterType="String">
+        DELETE FROM user WHERE username=#{username}
+    </delete>
+    <select id="find" parameterType="String" resultMap="user">
+        SELECT * FROM user RIGHT JOIN student ON user.sno = student.sno
+        WHERE user.username=#{username}
+    </select>
+    <update id="update" parameterType="cn.zx.pojo.User">
+        UPDATE user SET pwd=#{pwd},role=#{role},sno=#{student.sno} WHERE username=#{username}
+    </update>
+
+
+</mapper>
